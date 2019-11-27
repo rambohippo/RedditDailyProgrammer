@@ -1,0 +1,18 @@
+Dice Roller
+
+Your input will contain one or more lines, hwere each line will be in the form of "NdM", for example:
+    3d6
+    4d12
+    1d10
+    5d4
+
+The first number is the number of dice to roll, the d just means "dice", it's just used to split up the two numbers, and the second number is how many sides the dice have.
+The first number, the number of dice to roll, can be any integer between 1 and 100, inclusive.
+The second number, the number of sides on the dice, can be any integer between 2 and 100, inclusive.
+
+Output Description
+Print the sum of all the dice rolls for your output and the result of each roll on the same line. E.g.
+    3d6
+    14: 6 3 5
+You could also try setting it up so that you can manually input more rolls. That way you can just leave the program open and evertime you want to roll more dice, you just type it in and hit enter.
+Also, include modifier bonuses e.g. 3d6+5, 4d8-2
