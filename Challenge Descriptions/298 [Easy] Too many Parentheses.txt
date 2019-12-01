@@ -30,3 +30,11 @@ outputs:
     NULL
     (fgh)
     (abc)
+
+Notes:
+- Use a stack to keep track of the parentheses -> might be hard to track what to print
+    - push paren with index
+    - pop off when a valid pair is found -> add to list
+        - need to include other characters
+        - order list by index, join, and print
+- Mark indices to include or remove 
