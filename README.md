@@ -5,6 +5,7 @@ r/dailyprogrammer challenges
 Completed projects:
 
 - Challenge #381 [Easy] Yahtzee Upper Section Scoring
+- Challenge #380 [Easy] Smooshed Morse Code 1 (No bonus)
 - Challenge #379 [Easy] Progressive Taxation (No bonus)
 - Challenge #372 [Easy] Perfectly Balanced
 - Challenge #364 [Easy] Dice Roller
