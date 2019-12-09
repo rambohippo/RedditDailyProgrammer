@@ -1,7 +1,9 @@
 package dailyprogrammer;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class I380MorseCode {
 
@@ -16,6 +18,40 @@ public class I380MorseCode {
         tree.populateTree();
         return tree.getResultsAsList();
     }
+
+
+    /**
+     * Finds one possible decoding of the morese code input
+     * @param input Smooshed morse code that is a permutation of the alphabet
+     * @return One possible decoding of the morse code input
+     */
+    public static String smalphaFirstResult(String input) {
+        MorseTree tree = new MorseTree(input);
+        return tree.findFirstResult();
+    }
+
+
+    /**
+     * Decodes all smooshed morse code strings in the file "smorse2-bonus1.in".
+     * Returns the time in milliseconds that it took to find a decoding for
+     * each of the lines contained in the file
+     * @return Time in milliseconds to decode the entire input file
+     */
+    public static long smalphaBonus1() {
+        long start = 0;
+        long end = 0;
+        try {
+            Path morseInputPath = Paths.get("smorse2-bonus1.in");
+            List<String> allLines = Files.readAllLines(morseInputPath);
+            start = System.currentTimeMillis();
+            // allLines.forEach(line -> System.out.println(smalphaFirstResult(line)));
+            allLines.forEach(line -> smalphaFirstResult(line));
+            end = System.currentTimeMillis();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return end - start;
+    }
 }
 
 
@@ -25,7 +61,7 @@ class MorseTree {
         + " .... .. .--- -.- .-.. -- -. --- .--. --.- .-. ... - ..- ...-"
         + " .-- -..- -.-- --..";
     private static final String ENGLISH_CHARS = "abcdefghijklmnopqrstuvwxyz";
-    MorseTreeNode root;
+    private MorseTreeNode root;
 
     public MorseTree(String textInput) {
         this(createMorseCodeMap(), textInput);
@@ -56,43 +92,29 @@ class MorseTree {
     private static void populateTreeByNode(MorseTreeNode node) {
         node.addChildrenIfPossible();
         node.getChildren().forEach(child -> populateTreeByNode(child));
+        node.getChildren().removeAll(node.getChildren().stream()
+            .filter(child -> child.isMarkedForDelete())
+            .collect(Collectors.toList()));
     }
 
 
-    public void printTreeLeafOnly() {
-        printTreeLeafOnly(root);
+    public String findFirstResult() {
+        return findFirstResultByNode(root);
     }
 
-
-    private static void printTreeLeafOnly(MorseTreeNode node) {
-        // if (node.getRemainingChars().size() == 17) {
-        if (node.getRemainingChars().size() == 0) {
-            System.out.println("node: " + node.getDecodedOutput());
-        }
-        node.getChildren().forEach(each -> printTreeLeafOnly(each));
-    }
-
-
-    public void printTreeAllLettersToFile() {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"));
-            printTreeAllLettersToFile(writer, root);
-            writer.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-
-    private static void printTreeAllLettersToFile(Writer writer, MorseTreeNode node) {
-        try {
-            if (node.getRemainingChars().size() == 0) {
-                writer.write("node: " + node.getDecodedOutput() + "\n");
+    private static String findFirstResultByNode(MorseTreeNode node) {
+        node.addChildrenIfPossible();
+        for (MorseTreeNode child : node.getChildren()) {
+            if (child.getRemainingChars().size() == 0) {
+                return child.getDecodedOutput();
+            } else {
+                String resultString = findFirstResultByNode(child);
+                if (resultString != "") {
+                    return resultString;
+                }
             }
-            node.getChildren().forEach(each -> printTreeAllLettersToFile(writer, each));
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
+        return "";
     }
 
 
@@ -111,13 +133,20 @@ class MorseTree {
     }
 
 
+    /**
+     * A node in the morse tree that holds the current decoded string, the
+     * remaining input characters, the remaining morese code characters
+     * that have not been used, and up to 4 children.
+     */
+    @SuppressWarnings("unused")
     private class MorseTreeNode {
 
-        MorseTreeNode parent;
-        List<MorseTreeNode> children;
-        HashMap<String, String> remainingChars;
-        String remainingInput;
-        String decodedOutput;
+        private MorseTreeNode parent;
+        private List<MorseTreeNode> children;
+        private HashMap<String, String> remainingChars;
+        private String remainingInput;
+        private String decodedOutput;
+        private boolean markedForDelete;
 
         @SuppressWarnings("unchecked")
         public MorseTreeNode(HashMap<String, String> remainingChars,
@@ -128,6 +157,7 @@ class MorseTree {
             this.remainingChars = (HashMap<String, String>) remainingChars.clone();
             this.children = new ArrayList<>();
             this.decodedOutput = decodedOutput;
+            this.markedForDelete = false;
         }
 
 
@@ -151,6 +181,11 @@ class MorseTree {
         }
 
 
+        public boolean isMarkedForDelete() {
+            return markedForDelete;
+        }
+
+
         public void removeCharsFromRemainingInput(int start, int end) {
             StringBuilder builder = new StringBuilder(remainingInput);
             builder.delete(start, end);
@@ -159,7 +194,7 @@ class MorseTree {
 
 
         public void addChildrenIfPossible() {
-            for (int i = 1; i <= 4; i++) {
+            for (int i = 4; i >= 1; i--) {
                 if (checkForMorseChar(i)) {
                     String morseChar = remainingInput.substring(0, i);
                     MorseTreeNode child = new MorseTreeNode(remainingChars,
@@ -171,6 +206,8 @@ class MorseTree {
                     children.add(child);
                 }
             }
+
+            markedForDelete = this.getChildren().size() == 0 && this.getRemainingChars().size() > 0;
         }
 
 
