@@ -22,3 +22,12 @@ Typically, a valid input will have thousands of possible outputs. The object of 
 
 ......-..--...---.-....---...--....--.-..---.....---.-.---..---.-....--.-.---.-.--
 Can you do better? When this post is 7 days old, I'll award +1 gold medal flair to the submission with the fewest possible decodings. I'll break ties by taking the lexicographically first string. That is, I'll look at the first character where the two strings differ and award the one with a dash (-) in that position, since - is before . lexicographically.
+
+Notes:
+- Depth-First search
+- Each node holds what is left of the morse code string, a hashmap mapping each morse code characters to english characters, a pointer to the parent node, pointers to 4 children nodes (cases where the morse code character takes up 1-4 dots and dashes), current string in english characters
+- Start by searching the hashmap for the largest dot/dash pattern (starting with 4)
+    - if success, add the english character to the result, pass the hashmap with the character removed to the child
+        - Removing the character from the hashmap prevents from having to verify each english character is used only once
+    - if failure, search for the next smallest dot/dash patter (if 4 fails, search for 3, etc.)
+- When a full result is found, either return it immediately, or add the string to a result list and return all possible results at the end
