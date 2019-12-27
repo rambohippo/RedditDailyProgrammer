@@ -59,4 +59,25 @@ public class E377AxisAlignedPackingTest {
     public void testFit2_6() {
         assertEquals(0, E377AxisAlignedPacking.fit2(5, 5, 6, 1));
     }
+
+    @Test
+    public void testFit3_1() {
+        assertEquals(1000, E377AxisAlignedPacking.fit3(10, 10, 10, 1, 1, 1));
+    }
+
+    @Test
+    public void testFit3_2() {
+        assertEquals(32, E377AxisAlignedPacking.fit3(12, 34, 56, 7, 8, 9));
+    }
+
+    @Test
+    public void testFit3_3() {
+        assertEquals(32604, E377AxisAlignedPacking.fit3(123, 456, 789, 10, 11, 12));
+    }
+
+    @Test
+    public void testFit3_4() {
+        assertEquals(174648, E377AxisAlignedPacking.fit3(1234567, 89101112, 13141516,
+            171819, 202122, 232425));
+    }
 }
