@@ -6,15 +6,6 @@ import java.util.*;
 
 public class E207Bioinformatics {
 
-    public static void main(String[] args) {
-        List<String> output = findSecondDNAStrand("A A T G C C T A T G G C");
-        output.forEach(each -> System.out.println(each));
-
-        List<String> bonusOutput = findProteinSequence("A T G T T T C G A G G C T A A");
-        bonusOutput.forEach(each -> System.out.println(each));
-    }
-
-
     public static List<String> findSecondDNAStrand(String input) {
         List<String> fullStrand = new LinkedList<>();
         fullStrand.add(input);
@@ -57,7 +48,7 @@ public class E207Bioinformatics {
         if (codonBuilder.length() == 3) {
             proteins.add(codonMap.get(codonBuilder.toString()));
         }
-        
+
         String[] proteinArr = proteins.stream().toArray(String[]::new);
         proteinStrand.add(String.join(" ", proteinArr));
 
