@@ -14,3 +14,4 @@ Completed projects:
 - Challenge #317 [Intermediate] Counting Elements
 - Challenge #313 [Easy] Subset Sum
 - Challenge #298 [Easy] Too Many Parentheses
+- Challenge #207 [Easy] Bioinformatics 1 - DNA Replication (bonus)
